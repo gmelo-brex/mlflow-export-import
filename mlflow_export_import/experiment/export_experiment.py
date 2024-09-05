@@ -32,6 +32,8 @@ _logger = utils.getLogger(__name__)
 def export_experiment(
     experiment_id_or_name,
     output_dir,
+    import_model_artifacts=True,
+    max_runs=None,
     run_ids=None,
     export_permissions=False,
     run_start_time=None,
@@ -85,14 +87,18 @@ def export_experiment(
 
             kwargs["view_type"] = ViewType.ALL
         runs = SearchRunsIterator(
-            mlflow_client, exp.experiment_id, **kwargs
+            mlflow_client, exp.experiment_id, max_results=max_runs, **kwargs
         )
 
     for run in runs:
+        if max_runs:
+            if num_runs_exported > max_runs - 1:
+                break
         _export_run(
             mlflow_client,
             run,
             output_dir,
+            import_model_artifacts,
             ok_run_ids,
             failed_run_ids,
             run_start_time,
@@ -140,6 +146,7 @@ def _export_run(
     mlflow_client,
     run,
     output_dir,
+    import_model_artifacts,
     ok_run_ids,
     failed_run_ids,
     run_start_time,
@@ -159,6 +166,7 @@ def _export_run(
     is_success = export_run(
         run_id=run.info.run_id,
         output_dir=os.path.join(output_dir, run.info.run_id),
+        import_model_artifacts=import_model_artifacts,
         export_deleted_runs=export_deleted_runs,
         notebook_formats=notebook_formats,
         mlflow_client=mlflow_client,

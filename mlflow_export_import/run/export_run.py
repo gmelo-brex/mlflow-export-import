@@ -10,6 +10,7 @@ import mlflow
 
 from mlflow_export_import.common import utils
 from mlflow_export_import.common.click_options import (
+    opt_import_model_artifacts,
     opt_run_id,
     opt_output_dir,
     opt_notebook_formats,
@@ -44,6 +45,7 @@ def export_run(
     notebook_formats=None,
     raise_exception=False,
     mlflow_client=None,
+    import_model_artifacts=True,
 ):
     """
     :param run_id: Run ID.
@@ -100,7 +102,9 @@ def export_run(
         if skip_download_run_artifacts:
             _logger.warning(f"Not downloading run artifacts for run {run.info.run_id}")
         else:
-            if len(artifacts) > 0:  # Because of https://github.com/mlflow/mlflow/issues/2839
+            if (
+                import_model_artifacts
+            ):  # Because of https://github.com/mlflow/mlflow/issues/2839
                 fs.mkdirs(dst_path)
                 mlflow.artifacts.download_artifacts(
                     run_id=run.info.run_id,
@@ -185,8 +189,9 @@ def _inputs_to_dict(inputs):
 @click.command()
 @opt_run_id
 @opt_output_dir
+@opt_import_model_artifacts
 @opt_notebook_formats
-def main(run_id, output_dir, notebook_formats):
+def main(run_id, output_dir, notebook_formats, import_model_artifacts):
     _logger.info("Options:")
     for k, v in locals().items():
         _logger.info(f"  {k}: {v}")
