@@ -166,6 +166,7 @@ def _export_run(
     is_success = export_run(
         run_id=run.info.run_id,
         output_dir=os.path.join(output_dir, run.info.run_id),
+        skip_download_run_artifacts=not import_model_artifacts,
         import_model_artifacts=import_model_artifacts,
         export_deleted_runs=export_deleted_runs,
         notebook_formats=notebook_formats,
