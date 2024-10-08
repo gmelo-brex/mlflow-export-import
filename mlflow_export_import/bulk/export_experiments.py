@@ -12,6 +12,8 @@ from mlflow.exceptions import RestException
 
 from mlflow_export_import.common.click_options import (
     opt_experiments,
+    opt_import_model_artifacts,
+    opt_max_runs,
     opt_output_dir,
     opt_export_permissions,
     opt_notebook_formats,
@@ -31,6 +33,8 @@ _logger = utils.getLogger(__name__)
 def export_experiments(
     experiments,
     output_dir,
+    import_model_artifacts=True,
+    max_runs=None,
     export_permissions=False,
     run_start_time=None,
     export_deleted_runs=False,
@@ -90,6 +94,8 @@ def export_experiments(
                 mlflow_client,
                 exp_id_or_name,
                 output_dir,
+                import_model_artifacts,
+                max_runs,
                 export_permissions,
                 notebook_formats,
                 export_results,
@@ -167,6 +173,8 @@ def _export_experiment(
     mlflow_client,
     exp_id_or_name,
     output_dir,
+    import_model_artifacts,
+    max_runs,
     export_permissions,
     notebook_formats,
     export_results,
@@ -186,6 +194,8 @@ def _export_experiment(
             experiment_id_or_name=exp.experiment_id,
             output_dir=exp_output_dir,
             run_ids=run_ids,
+            import_model_artifacts=import_model_artifacts,
+            max_runs=max_runs,
             export_permissions=export_permissions,
             run_start_time=run_start_time,
             export_deleted_runs=export_deleted_runs,
@@ -245,6 +255,8 @@ class Result:
 @click.command()
 @opt_experiments
 @opt_output_dir
+@opt_import_model_artifacts
+@opt_max_runs
 @opt_export_permissions
 @opt_run_start_time
 @opt_export_deleted_runs
@@ -253,6 +265,8 @@ class Result:
 def main(
     experiments,
     output_dir,
+    import_model_artifacts,
+    max_runs,
     export_permissions,
     run_start_time,
     export_deleted_runs,
@@ -265,6 +279,8 @@ def main(
     export_experiments(
         experiments=experiments,
         output_dir=output_dir,
+        import_model_artifacts=import_model_artifacts,
+        max_runs=max_runs,
         export_permissions=export_permissions,
         run_start_time=run_start_time,
         export_deleted_runs=export_deleted_runs,

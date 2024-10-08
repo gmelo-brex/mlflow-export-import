@@ -10,6 +10,29 @@ def opt_output_dir(function):
     return function
 
 
+def opt_max_runs(function):
+    function = click.option(
+        "--max-runs",
+        help="Number of runs that you want to export from each experiment",
+        type=int,
+        default=None,
+        required=False,
+        show_default=True,
+    )(function)
+    return function
+
+
+def opt_import_model_artifacts(function):
+    function = click.option(
+        "--import-model-artifacts",
+        help="If you don't want to import model artifacts, set this to False. Otherwise, set it to True.",
+        type=bool,
+        default=True,
+        show_default=True,
+    )(function)
+    return function
+
+
 def opt_notebook_formats(function):
     function = click.option(
         "--notebook-formats",
